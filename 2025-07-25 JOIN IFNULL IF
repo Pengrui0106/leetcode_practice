@@ -34,3 +34,13 @@ LEFT JOIN Confirmations c
 GROUP BY s.user_id
 ORDER BY user_id
 ;
+
+620. Not Boring Movies
+
+#NOTE 1: % is a way to find odds and evens.
+
+SELECT id, movie, description, rating
+FROM Cinema
+WHERE id % 2 = 1 AND description != 'boring'
+ORDER BY rating DESC
+;
