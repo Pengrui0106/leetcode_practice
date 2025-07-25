@@ -1,0 +1,36 @@
+#570. Managers with at Least 5 Direct Reports
+
+#NOTE 1: We can use JOIN function to JOIN a table that we created.
+
+SELECT e1.name
+FROM Employee e1
+JOIN(
+    SELECT managerId
+    FROM Employee
+    WHERE managerId IS NOT NULL
+    GROUP BY managerId
+    HAVING COUNT(*) >= 5
+    ) e2
+ON e1.id = e2.managerId
+;
+
+
+#1934. Confirmation Rate
+
+#NOTE 1: IFNULL(,0) is a good way to transfer NULL to 0.
+#NOTE 2: SUM(c.action = 'confirmed') will return 1,0,NULL. (And the NULLs need to be coped with IFNULL)
+#NOTE 3: "ROUND(AVG(IF((c.action = 'confirmed'),1,0)),2) AS confirmation_rate" also works. IF statement is interesting. 
+
+SELECT s.user_id, 
+    IFNULL(
+        ROUND(
+            SUM(c.action = 'confirmed') / COUNT(c.action),
+            2),
+        0)
+    AS confirmation_rate
+FROM Signups s
+LEFT JOIN Confirmations c
+    ON s.user_id = c.user_id
+GROUP BY s.user_id
+ORDER BY user_id
+;
