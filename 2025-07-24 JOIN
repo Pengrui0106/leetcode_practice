@@ -1,5 +1,9 @@
 #1661. Average Time of Process per Machine
 
+#NOTE 1: JOIN operates earlier than SELECT. 
+#NOTE 2: After self JOIN, the number of raws stays the same. ON/AND query makes it shorter(like a filter).
+#NOTE 3: Without GROUP BY, only one average number of all raws will be returned. 
+
 SELECT a.machine_id, 
     ROUND((AVG(b.timestamp - a.timestamp)),3) 
     AS processing_time
@@ -10,4 +14,32 @@ JOIN Activity b
     AND a.activity_type = 'start'
     AND b.activity_type = 'end'
 GROUP BY a.machine_id
+;
+
+
+#577. Employee Bonus
+
+SELECT e.name, b.bonus
+FROM Employee e
+LEFT JOIN Bonus b
+    ON e.empId = b.empId
+WHERE b.bonus < 1000 OR b.bonus IS NULL
+;
+
+
+#1280. Students and Examinations
+
+#NOTE 1: CROSS JOIN makes raws multipled.
+#NOTE 2: When SELECT, it is important to watch which table has the good and solid content. 
+#Otherwise from another table, we might select NULL. EG: we should SELECT s.student_id not e.student_id.
+
+SELECT s.student_id, s.student_name, sub.subject_name,
+    COUNT(e.student_id) AS attended_exams
+FROM Students s
+CROSS JOIN Subjects sub
+LEFT JOIN Examinations e
+    ON s.student_id = e.student_id
+    AND sub.subject_name = e.subject_name
+GROUP BY s.student_id, s.student_name, sub.subject_name
+ORDER BY s.student_id, sub.subject_name
 ;
