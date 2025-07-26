@@ -1,5 +1,7 @@
 #1251. Average Selling Price
 
+#NOTE 1: I was shocked that BETWEEN AND could be some SQL keywords....
+
 SELECT p.product_id,
     IFNULL(ROUND(SUM(p.price * u.units) / SUM(u.units),2),0)
     AS average_price
