@@ -11,3 +11,29 @@ LEFT JOIN UnitsSold u
     AND u.purchase_date BETWEEN p.start_date AND p.end_date
 GROUP BY p.product_id
 ;
+
+
+#1075. Project Employees I
+
+SELECT p.project_id, 
+       ROUND(AVG(e.experience_years),2) AS average_years
+FROM Project p
+LEFT JOIN Employee e
+    ON p.employee_id = e.employee_id
+GROUP BY p.project_id
+;
+
+
+#1633. Percentage of Users Attended a Contest
+
+#NOTE 1: Got to know how ORDER BY functions and structures.
+#NOTE 2: GROUP BY processes earlier than SELECT. From → Where → Group By → Having → Select → Order By → Limit
+#NOTE 3: Subquery is interesing, which also needs a SELECT to complete.
+
+SELECT contest_id,
+       ROUND(COUNT(DISTINCT user_id) / (SELECT COUNT(*) FROM Users) * 100,2) 
+       AS percentage
+FROM Register
+GROUP BY contest_id
+ORDER BY percentage DESC, contest_id ASC
+;
