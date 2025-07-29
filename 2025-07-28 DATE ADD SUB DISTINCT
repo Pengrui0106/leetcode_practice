@@ -1,0 +1,46 @@
+#550. Game Play Analysis IV
+
+#NOTE 1: DATE_ADD and DATE_SUB can be used to deal with date datatype.
+#NOTE 2: We can choose a little part of a table and join it to the initial whole table to do some calculation.
+#NOTE 3: When we assigned a new name to something, remember to use this new name later on. 
+
+SELECT 
+    ROUND(
+        COUNT(DISTINCT a.player_id) / (SELECT COUNT(DISTINCT player_id) FROM Activity),
+    2)
+    AS fraction
+FROM Activity a
+JOIN
+    (
+    SELECT player_id, MIN(event_date) AS first_login
+    FROM Activity
+    GROUP BY player_id
+    ) f
+ON a.player_id = f.player_id
+    AND a.event_date = DATE_ADD(f.first_login, INTERVAL 1 DAY)
+;
+
+
+
+#2356. Number of Unique Subjects Taught by Each Teacher
+
+SELECT teacher_id,
+    COUNT(DISTINCT subject_id) AS cnt
+FROM Teacher
+GROUP BY teacher_id
+;
+
+
+
+
+#1141. User Activity for the Past 30 Days I
+
+#NOTE 1: When grouping a category, we need to see which category is the unique one. 
+
+SELECT 
+    activity_date day,
+    COUNT(DISTINCT user_id) AS active_users
+FROM Activity
+WHERE activity_date BETWEEN DATE_SUB('2019-07-27', INTERVAL 29 DAY) AND '2019-07-27'
+GROUP BY activity_date
+;
