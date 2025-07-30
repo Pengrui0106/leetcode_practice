@@ -1,0 +1,110 @@
+#1070. Product Sales Analysis III
+
+#NOTE 1: WHERE IN is good. This one seems wierd for me but it works well.
+
+SELECT product_id,
+    year AS first_year,
+    quantity,
+    price
+FROM Sales
+WHERE (product_id, year) IN
+    (
+        SELECT product_id,
+            MIN(year)
+        FROM Sales
+        GROUP BY product_id
+    )
+;
+
+
+
+#596. Classes With at Least 5 Students
+
+#NOTE 1: HAVING something is a good way to filter.
+
+SELECT class
+FROM Courses
+GROUP BY class
+HAVING COUNT(DISTINCT student) >= 5
+;
+
+
+
+#1729. Find Followers Count
+
+
+SELECT user_id,
+    COUNT(user_id) AS followers_count
+FROM Followers
+GROUP BY user_id
+ORDER BY user_id ASC
+;
+
+
+
+#619. Biggest Single Number
+
+#NOTE 1: If we want a NULL, we use two layers of SELECT to make sure at least one row is returned.
+#NOTE 2: ORDER then LIMIT 1 can help to get the top thing that we want to get.
+SELECT
+    (
+        SELECT num
+        FROM MyNumbers
+        GROUP BY num
+        HAVING COUNT(*) = 1
+        ORDER BY num DESC
+        LIMIT 1
+    ) num
+;
+
+
+
+#1045. Customers Who Bought All Products
+
+#NOTE 1: When we have two tables, we don't have to join them all the time. We can use (subquery) instead.
+
+SELECT customer_id
+FROM Customer
+GROUP BY customer_id
+HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(product_key) FROM Product)
+;
+
+
+
+#1731. The Number of Employees Which Report to Each Employee
+
+#NOTE 1: By default I always look at e1 when I do self-join. However, sometimes we need the result of e2.
+
+SELECT 
+    e2.employee_id,
+    e2.name,
+    COUNT(*) AS reports_count,
+    ROUND(AVG(e1.age),0) AS average_age
+FROM Employees e1
+JOIN Employees e2
+ON e1.reports_to = e2.employee_id
+GROUP BY e2.employee_id
+ORDER BY e2.employee_id
+;
+
+
+
+#1789. Primary Department for Each Employee
+
+#NOTE 1: GROUP BY must be written before HAVING
+#NOTE 2: When there is a filtering request but bit complex, we can figure the simple one out and then use
+# WHERE... OR... Put the simple one right after WHERE and then add on to the OR.
+
+SELECT 
+    employee_id,
+    department_id
+FROM Employee
+WHERE primary_flag = 'Y'
+    OR employee_id IN
+    (
+        SELECT employee_id
+        FROM Employee
+        GROUP BY employee_id
+        HAVING COUNT(employee_id) = 1
+    )
+;
