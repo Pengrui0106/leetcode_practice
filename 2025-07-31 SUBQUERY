@@ -1,0 +1,15 @@
+#626. Exchange Seats
+
+#NOTE 1: When we need to deal with odds and evens, we should think of %.
+#NOTE 2: In a subquery, though we use the same table, we need to rename the table in subquery to eliminate confusion. 
+
+SELECT id,
+    CASE
+        WHEN id % 2 = 1 AND id < (SELECT MAX(id) FROM Seat) THEN 
+            (SELECT student FROM Seat WHERE id = s.id + 1)
+        WHEN id % 2 = 0 THEN
+            (SELECT student FROM Seat WHERE id = s.id - 1)
+        ELSE student
+        END AS student
+FROM Seat s
+;
