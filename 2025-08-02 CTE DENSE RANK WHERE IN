@@ -1,0 +1,74 @@
+#602. Friend Requests II: Who Has the Most Friends
+
+#NOTE: UNION ALL can help to make two rows into one row.
+
+WITH all_id AS(
+    SELECT requester_id AS id
+    FROM RequestAccepted
+
+    UNION ALL
+
+    SELECT accepter_id AS id
+    FROM RequestAccepted
+)
+
+SELECT 
+    id,
+    COUNT(id) AS num
+FROM all_id
+GROUP BY id
+ORDER BY COUNT(id) DESC
+LIMIT 1
+;
+
+
+
+#585. Investments in 2016
+
+#NOTE: WHERE IN means to find value/values in a group of values.
+
+SELECT 
+    ROUND(
+        SUM(tiv_2016),
+    2) AS tiv_2016
+FROM Insurance
+WHERE tiv_2015 IN(
+    SELECT tiv_2015
+    FROM Insurance
+    GROUP BY tiv_2015
+    HAVING COUNT(*) > 1
+)
+AND (lat, lon) IN(
+    SELECT lat, lon
+    FROM Insurance
+    GROUP BY lat, lon
+    HAVING COUNT(*) = 1
+)
+;
+
+
+
+
+#185. Department Top Three Salaries
+
+#NOTE:DENSE_RANK means dense and a lot of ranks and no skipping...ROW_NUMBER(), RANK() have nothing inside the parentheses. 
+
+WITH salary_rank AS(
+    SELECT 
+    d.name AS Department,
+    e.name AS Employee,
+    e.salary AS Salary,
+    DENSE_RANK() OVER(
+        PARTITION BY e.departmentId ORDER BY e.salary DESC
+    ) AS rnk
+FROM Employee e
+JOIN Department d
+    ON e.departmentId = d.id
+)
+
+SELECT Department, Employee, Salary
+FROM salary_rank
+WHERE rnk <= 3
+;
+
+
